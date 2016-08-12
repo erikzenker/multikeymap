@@ -8,7 +8,7 @@
 #include <vector>   /* std::vector */
 
 // MultiKeyMap
-#include <MultiKeyMap.hpp>
+#include <multikeymap.hpp>
 
 // HANA
 #include <boost/hana.hpp>
@@ -26,7 +26,7 @@ int main(){
     typedef int         Value;
 
     // Create multi key map
-    MultiKeyMap<Value, Key1, Key2, Key3> map;
+    etl::MultiKeyMap<Value, Key1, Key2, Key3> map;
 
     // Set some value
     map(1, 0.5, "Hi") = 4;
