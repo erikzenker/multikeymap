@@ -92,6 +92,7 @@ namespace etl {
             return hana::fold_left(keys, map, at);
         }
 
+
     } // namespace detail
 
     /**
@@ -107,10 +108,27 @@ namespace etl {
     template<typename T_Value, typename... T_Keys>
     class MultiKeyMap {
 
+        using Value = T_Value;
+        using LastKey = decltype(hana::back(hana::tuple<T_Keys ...>()));
+
     public:
 
         MultiKeyMap() {
 
+        }
+
+
+        /**********************************************************************
+         * Iterator
+         **********************************************************************/
+        class iterator {
+            typename std::map<LastKey, Value>::iterator current;
+        };
+
+        void begin(){
+        }
+
+        void end(){
         }
 
         /**********************************************************************
