@@ -114,8 +114,7 @@ namespace etl {
       using Value = typename std::decay<LastKey>::type;
       using ValueCt = std::vector<Value>;
       using KeysTpl = decltype(hana::take_front(
-          ArgsTpl(), hana::int_c<hana::minus(hana::int_c<hana::size(ArgsTpl())>,
-                                             1)>)); // hana::tuple<T_Keys...>;
+          ArgsTpl(), hana::minus(hana::size(ArgsTpl()), hana::size(hana::make_tuple(1)))));
       using KeysTplCt = std::vector<KeysTpl>;
 
     public:
