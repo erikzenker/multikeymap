@@ -106,27 +106,26 @@ namespace etl {
      * by specifying not all keys by the values method.
      *
      */
-    template<typename T_Value, typename... T_Keys>
+    template<typename ...T_Args>
     class MultiKeyMap {
 
-        using Value = T_Value;
-        using ValueCt = std::vector<Value>;
-        using KeysTpl = hana::tuple<T_Keys...>;
-        using KeysTplCt = std::vector<KeysTpl>;
-        using LastKey = decltype(hana::back(KeysTpl()));
+      using ArgsTpl = hana::tuple<T_Args...>;
+      using LastKey = decltype(hana::back(ArgsTpl()));
+      using Value = typename std::decay<LastKey>::type;
+      using ValueCt = std::vector<Value>;
+      using KeysTpl = decltype(hana::take_front(
+          ArgsTpl(), hana::int_c<hana::minus(hana::int_c<hana::size(ArgsTpl())>,
+                                             1)>)); // hana::tuple<T_Keys...>;
+      using KeysTplCt = std::vector<KeysTpl>;
 
     public:
+      MultiKeyMap() {}
 
-        MultiKeyMap() {
-
-        }
-
-
-        /**********************************************************************
-         * Iterator
-         **********************************************************************/
-        class iterator {
-            typename std::map<LastKey, Value>::iterator current;
+      /**********************************************************************
+       * Iterator
+       **********************************************************************/
+      class iterator {
+        typename std::map<LastKey, Value>::iterator current;
         };
 
         void begin(){
@@ -138,12 +137,14 @@ namespace etl {
         /**********************************************************************
          * Element accesses
          **********************************************************************/
-        T_Value &operator()(const T_Keys... keys) {
+        template<typename... T_Keys>
+        Value &operator()(const T_Keys... keys) {
             return detail::traverse(multiKeyMap, hana::make_tuple(keys...));
 
         }
 
-        T_Value& at(const T_Keys... keys) {
+        template<typename... T_Keys>
+        Value& at(const T_Keys... keys) {
             return atImpl(hana::make_tuple(keys...));
         }
 
@@ -151,6 +152,7 @@ namespace etl {
         /**********************************************************************
          * Modifiers
          **********************************************************************/
+        template<typename... T_Keys>
         bool erase(const T_Keys ...keys) {
             return eraseImpl(hana::make_tuple(keys...));
         }
@@ -159,11 +161,12 @@ namespace etl {
         /**********************************************************************
          * Operations
          **********************************************************************/
+        template<typename... T_Keys>
         bool test(const T_Keys ...keys) {
             return testImpl(hana::make_tuple(keys...));
         }
 
-        void values(T_Value &values, KeysTplCt &keys) {
+        void values(Value &values, KeysTplCt &keys) {
             valuesImpl(values, keys);
         }
 
@@ -174,14 +177,14 @@ namespace etl {
 
     private:
 
-        typename detail::MapOfMaps<T_Keys..., T_Value>::type multiKeyMap;
+        typename detail::MapOfMaps<T_Args...>::type multiKeyMap;
 
 
         /***************************************************************************
          * at
          ***************************************************************************/
         template<typename T_KeysTpl>
-        T_Value &atImpl(const T_KeysTpl keysTuple) {
+        Value &atImpl(const T_KeysTpl keysTuple) {
             auto firstKeysSize = hana::int_c<hana::minus(hana::int_c < hana::size(keysTuple) > , 1)>;
             auto firstKeys = hana::take_front_c<firstKeysSize>(keysTuple);
             auto lastKey = hana::back(keysTuple);
@@ -234,17 +237,16 @@ namespace etl {
         /***************************************************************************
          * values
          ***************************************************************************/
-        template<typename T_ValuesCT, typename T_KeysCT>
-        void valuesImpl(T_Value &values, T_KeysCT &keys) {
-            constexpr size_t keysTupleSize = std::tuple_size<std::tuple<T_Keys...>>::value;
+        void valuesImpl(Value &values, KeysTplCt &keys) {
+            auto keysTupleSize = hana::size(KeysTpl());
             detail::SubTreeValues<keysTupleSize>()(multiKeyMap, values, keys);
         }
 
-        template<typename T_ValuesCT, typename T_KeysCT, typename ...T_Sub_Keys>
-        void valuesImpl(T_ValuesCT &values, T_KeysCT &keys, const T_Sub_Keys... subKeys) {
-            constexpr size_t subKeysTupleSize = std::tuple_size<std::tuple<T_Sub_Keys...>>::value;
-            constexpr size_t keysTupleSize = std::tuple_size<std::tuple<T_Keys...>>::value;
-            constexpr size_t subTreeSize = keysTupleSize - subKeysTupleSize;
+        template<typename ...T_Sub_Keys>
+        void valuesImpl(ValueCt &values, KeysTplCt &keys, const T_Sub_Keys... subKeys) {
+            auto subKeysTupleSize = hana::size(hana::tuple<T_Sub_Keys...>());
+            auto keysTupleSize = hana::size(KeysTpl());
+            auto subTreeSize = keysTupleSize - subKeysTupleSize;
             auto tuple = hana::make_tuple(subKeys...);
             detail::SubTreeValues<subTreeSize>()(detail::traverse(multiKeyMap, tuple), values, keys, tuple);
 
