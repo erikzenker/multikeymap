@@ -5,8 +5,8 @@ include_directories("include/")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
-set(SOURCE_FILES main.cpp)
-add_executable(multikeymap ${SOURCE_FILES})
+add_subdirectory(example)
+add_subdirectory(test)
 
 # Doxygen
 find_package(Doxygen)
