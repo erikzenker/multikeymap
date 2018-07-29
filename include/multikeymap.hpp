@@ -1,7 +1,8 @@
 #pragma once
 
 // STL
-#include <map>                /* std::map */
+#include <map>
+#include <vector>
 
 // HANA
 #include <boost/hana.hpp>
@@ -109,7 +110,10 @@ namespace etl {
     class MultiKeyMap {
 
         using Value = T_Value;
-        using LastKey = decltype(hana::back(hana::tuple<T_Keys ...>()));
+        using ValueCt = std::vector<Value>;
+        using KeysTpl = hana::tuple<T_Keys...>;
+        using KeysTplCt = std::vector<KeysTpl>;
+        using LastKey = decltype(hana::back(KeysTpl()));
 
     public:
 
@@ -159,13 +163,12 @@ namespace etl {
             return testImpl(hana::make_tuple(keys...));
         }
 
-        template<typename T_ValuesCT, typename T_KeysCT>
-        void values(T_Value &values, T_KeysCT &keys) {
+        void values(T_Value &values, KeysTplCt &keys) {
             valuesImpl(values, keys);
         }
 
-        template<typename T_ValuesCT, typename T_KeysCT, typename ...T_Sub_Keys>
-        void values(T_ValuesCT &values, T_KeysCT &keys, const T_Sub_Keys... subKeys) {
+        template<typename ...T_Sub_Keys>
+        void values(ValueCt &values, KeysTplCt &keys, const T_Sub_Keys... subKeys) {
             valuesImpl(values, keys, subKeys...);
         }
 
