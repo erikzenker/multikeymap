@@ -1,3 +1,11 @@
+# MultiKeyMap #
+[![Build Status](https://travis-ci.org/erikzenker/multikeymap.svg?branch=master)](https://travis-ci.org/erikzenker/multikeymap)  [![codecov](https://codecov.io/gh/erikzenker/multikeymap/branch/master/graph/badge.svg)](https://codecov.io/gh/erikzenker/multikeymap)
+===========
+
+**MultiKeyMap** is C++ class similar to the std::map but with multiple keys types e.g.: `MultiKeyMap<Key1, Key2, ..., Value> multikeymap`.
+
+## Usage ##
+```c++
 // STL
 #include <iostream>
 #include <string>
@@ -52,3 +60,39 @@ int main()
 
     return 0;
 }
+``` 
+
+Output:
+```text
+Karl Koch
+Hans Meier
+Germany Berlin Schillerweg 10 Hans Meier
+Germany Hamburg Goetheweg 5 Karl Koch
+```
+
+## Build Example ##
+```bash
+mkdir build; cd build
+cmake ..
+cmake --build multikeymap_example
+./example/multikeymap_example
+```
+
+## Build Tests ##
+```bash
+mkdir build; cd build
+cmake ..
+cmake --build multikeymap_unit_test
+./test/unit/multikeymap_unit_test
+
+```
+
+## Dependencies ##
+* boost 1.67
+* c++14
+
+## Licence ##
+MIT
+
+## Author ##
+Written by Erik Zenker (erikzenker (at) hotmail.com)
