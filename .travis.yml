@@ -5,6 +5,7 @@ addons:
     packages:
     - cmake
     - libboost-all-dev
+    - lcov
 compiler:
 - gcc
 os:
