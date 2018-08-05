@@ -20,3 +20,12 @@ target_link_libraries(
 )
 
 add_test(NAME multikeymap_unit_test COMMAND multikeymap_unit_test)
+
+include(../../cmake/CodeCoverage.cmake)
+APPEND_COVERAGE_COMPILER_FLAGS()
+
+SETUP_TARGET_FOR_COVERAGE_LCOV(
+        NAME multikeymap_coverage
+        EXECUTABLE ${CMAKE_CURRENT_BINARY_DIR}/multikeymap_unit_test
+        DEPENDENCIES multikeymap_unit_test
+)
