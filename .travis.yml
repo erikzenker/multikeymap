@@ -1,0 +1,21 @@
+language: cpp
+dist: trusty
+addons:
+  apt:
+    packages:
+    - cmake
+    - libboost-all-dev
+compiler:
+- gcc
+os:
+- linux
+script:
+- export CXX=g++
+- export CC=gcc
+- export CODECOV_TOKEN="fef137ec-07a2-4e44-ac5c-a4a4b9adaee6"
+- mkdir build && cd build
+- cmake .. -DCMAKE_BUILD_TYPE=Debug
+- cmake --build . --target multikeymap_coverage
+- ./test/unit/multikeymap_unit_test
+- bash <(curl -s https://codecov.io/bash) || echo 'Codecov failed to upload'
+
