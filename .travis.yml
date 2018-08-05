@@ -3,19 +3,21 @@ dist: trusty
 addons:
   apt:
     sources:
+    - sourceline: 'ppa:mhier/libboost-latest'
     - ubuntu-toolchain-r-test
     packages:
     - cmake
     - libboost-all-dev
     - lcov
-    - g++-5
+    - g++-7
+    - boost1.67
 compiler:
 - gcc
 os:
 - linux
 script:
-- export CXX=g++-5
-- export CC=gcc-5
+- export CXX=g++-7
+- export CC=gcc-7
 - export CODECOV_TOKEN="fef137ec-07a2-4e44-ac5c-a4a4b9adaee6"
 - mkdir build && cd build
 - cmake .. -DCMAKE_BUILD_TYPE=Debug
